@@ -28,7 +28,7 @@ fobj = fopen(fileName, 'r');
 
 % read in data using textscan function (watch out if the file has a
 % header!)
-fileData = textscan(fobj, "%f %f %f");
+fileData = textscan(fobj, "%f %f %f", 10, "Delimiter", ' ', 'MultipleDelimsAsOne', 1, 'HeaderLines', 1);
 celldisp(fileData);
 
 % close file object
