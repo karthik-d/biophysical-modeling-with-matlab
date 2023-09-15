@@ -70,7 +70,6 @@ end
 % create deltaT array, using a for loop or vectorization
 deltaT = (1:(NT-1))';
 
-
 %% Part 3. Plot MSD on a log-log sclae
 
 % open figure window

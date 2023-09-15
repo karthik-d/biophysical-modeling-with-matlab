@@ -55,8 +55,8 @@ nbins = 15;
 % calling function to put output onto dummy window.
 figure(101),
 
-hobj_heads = ;
-hobj_tails = ;
+hobj_heads = histogram(nHeads, nbins);
+hobj_tails = histogram(nTails, nbins);
 
 % open figure window
 figure(1), clf, hold on, box on;
