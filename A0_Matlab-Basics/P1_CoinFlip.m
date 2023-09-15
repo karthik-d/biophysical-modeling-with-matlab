@@ -22,10 +22,10 @@ clc;
 %% Part 1,2. Obtain number of heads and tails found after multiple trials of flipping multiple coins
 
 % set number of coin flips
-nFlips = 8;
+nFlips = 1000;
 
 % set number of trials
-nTrials = 10;
+nTrials = 100;
 
 % use rand and round functions to generate each trial of coin flipping
 % which will be represented by a nTrials x nFlips matrix of 1s and 0s
@@ -55,14 +55,20 @@ nbins = 15;
 % calling function to put output onto dummy window.
 figure(101),
 
-hobj_heads = histogram(nHeads, nbins);
-hobj_tails = histogram(nTails, nbins);
+hobj_heads = histogram(nHeads);
+hobj_tails = histogram(nTails);
 
 % open figure window
-figure(1), clf, hold on, box on;
+% figure(1), clf, hold on, box on;
+
+disp(hobj_heads);
+
 
 % plot curves, label axes, add legend, etc.
-
+xlabel('N_{heads}');
+ylabel('P(N_{heads})');
+% plot(hobj_heads, "b");
+plot(hobj_tails, "g")
 
 %% Part 4. Plot multiple distributions as a function of nTrials
 
