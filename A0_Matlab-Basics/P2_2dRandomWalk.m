@@ -76,15 +76,22 @@ deltaT = (1:(NT-1))';
 figure(1), clf, hold on, box on;
 
 % plot curve, add units to axes, etc
+ax = gca;
+ax.XScale = 'log';
+ax.YScale = 'log';
 
+xlabel('Lag Time (seconds)');
+ylabel('MSD (microns^2)');
+
+plot(MSD, deltaT, 'red');
 
 %% Part 4. Determine alpha and diffusion coefficient
 
 % get coefficients for line of first few MSD points using polyfit
 
+%{
 
-
-% store slope and diffusion coefficient
+% store slope and diffusion coefficient.
 alpha = ;
 diffusionCoefficient = ;
 
