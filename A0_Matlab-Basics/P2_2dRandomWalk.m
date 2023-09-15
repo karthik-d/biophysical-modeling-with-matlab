@@ -21,18 +21,20 @@ clc;
 
 % create string with name and location of file in your file path (edit as
 % necessary)
-fileName = 'randomWalker.dat';
+fileName = 'data/randomWalker.dat';
 
 % load file into file object
-fobj = fopen(fileName);
+fobj = fopen(fileName, 'r');
 
 % read in data using textscan function (watch out if the file has a
 % header!)
-fileData = textscan(fobj, );
+fileData = textscan(fobj, "%f %f %f");
+celldisp(fileData);
 
 % close file object
 fclose(fobj);
 
+%{
 % parse file data to get variables of interest
 t = ;
 x = ;
@@ -101,6 +103,6 @@ expectedD = stepSize*stepSize/stepDuration;
 % print result to console
 disp(['expected diffusion coefficient is = ' num2str(expectedD)]);
 
-
+%}
 
 
