@@ -68,7 +68,7 @@ end
 
 
 % create deltaT array, using a for loop or vectorization
-deltaT = (1:(NT-1))';
+deltaT = t(1)
 
 %% Part 3. Plot MSD on a log-log sclae
 
@@ -77,23 +77,24 @@ figure(1), clf, hold on, box on;
 
 % plot curve, add units to axes, etc
 ax = gca;
-ax.XScale = 'log';
-ax.YScale = 'log';
+% ax.XScale = 'log';
+% ax.YScale = 'log';
 
 xlabel('Lag Time (seconds)');
 ylabel('MSD (microns^2)');
+
+disp(deltaT(1:10));
 
 plot(MSD, deltaT, 'red');
 
 %% Part 4. Determine alpha and diffusion coefficient
 
 % get coefficients for line of first few MSD points using polyfit
-
-%{
+linearCoeffs = polyfit(log10(deltaT), log10(MSD), 1);
 
 % store slope and diffusion coefficient.
-alpha = ;
-diffusionCoefficient = ;
+alpha = linearCoeffs(1);
+diffusionCoefficient = linearCoeffs(2);
 
 % print results to console
 disp(['alpha is = ' num2str(alpha)]);
@@ -103,12 +104,15 @@ disp(['measured diffusion coefficient is = ' num2str(diffusionCoefficient)]);
 %% Part 5. Compare expected and measured diffusion coefficient
 
 % store step size and step duration
-stepSize = ;
-stepDuration = ;
+stepSize = sqrt((x(2:end)-x(1:(end-1))).^2 + (y(2:end)-y(1:(end-1)).^2));   % euclidean distances to compute all step sizes.
+stepDuration = t(2:end) - t(1:(end-1));
+disp(stepDuration(1:10));
+disp(stepSize(1:10));
 
 % calculate expected diffusion coefficient
-expectedD = stepSize*stepSize/stepDuration;
+expectedD = stepSize.*stepSize./stepDuration;
 
+disp(expectedD(1:10));
 % print result to console
 disp(['expected diffusion coefficient is = ' num2str(expectedD)]);
 
