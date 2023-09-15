@@ -28,17 +28,15 @@ fobj = fopen(fileName, 'r');
 
 % read in data using textscan function (watch out if the file has a
 % header!)
-fileData = textscan(fobj, "%f %f %f", 10, "Delimiter", ' ', 'MultipleDelimsAsOne', 1, 'HeaderLines', 1);
-celldisp(fileData);
+fileData = textscan(fobj, "%f %f %f", "Delimiter", ' ', 'MultipleDelimsAsOne', 1, 'HeaderLines', 1);
 
 % close file object
 fclose(fobj);
 
-%{
 % parse file data to get variables of interest
-t = ;
-x = ;
-y = ;
+t = fileData{1};
+x = fileData{2};
+y = fileData{3};
 
 % get number of time points in trajectory using length function
 NT = length(t);
@@ -52,21 +50,26 @@ MSD = zeros(NT-1,1);
 % loop over the different possible time windows, calculate MSD for each
 % time window size
 for ii = 1:(NT-1)
+	
+	%% -- Each loop deals with delT = 1, 2, 3, ... and computes one row of the MSD at the end.
+	
 	% calculate x displacements, separated by ii indices
 	dx = x(1+ii:end) - x(1:end-ii);
 	
 	% calculate y displacements similarly
-	dy = ;
+	dy = y(1+ii:end) - y(1:end-ii);
 	
 	% take mean over all displacements
-	dispMean = mean(  );
+	dispMean = mean( dx.^2 + dy.^2 );
 	
 	% store in MSD array
 	MSD(ii) = dispMean;
 end
 
+
 % create deltaT array, using a for loop or vectorization
-deltaT = ;
+deltaT = (1:(NT-1))';
+
 
 %% Part 3. Plot MSD on a log-log sclae
 
