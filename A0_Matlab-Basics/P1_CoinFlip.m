@@ -53,10 +53,23 @@ nbins = 15;
 % create histogram object using histogram function for head and tail flips, obtain distributions
 % NOTE: histogram function will call a window, so run figure(101) before
 % calling function to put output onto dummy window.
-figure(101),
+figure(101);
 
-hobj_heads = histogram(nHeads);
-hobj_tails = histogram(nTails);
+hobj_heads = histogram(nHeads,'Normalization','pdf');
+heads_xcenters = hobj_heads.BinEdges(1:(end-1)) + hobj_heads.BinWidth/2;
+heads_ys = hobj_heads.Values;
+
+hobj_tails = histogram(nTails,'Normalization','pdf');
+tails_xcenters = hobj_tails.BinEdges(1:(end-1)) + hobj_tails.BinWidth/2;
+tails_ys = hobj_tails.Values;
+
+
+figure(1);
+hold on;
+plot(heads_xcenters, heads_ys, "Color", 'red');
+hold on;
+plot(tails_xcenters, tails_ys, "Color", "green");
+hold off;
 
 % open figure window
 % figure(1), clf, hold on, box on;
