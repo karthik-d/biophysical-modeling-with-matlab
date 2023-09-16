@@ -68,7 +68,7 @@ end
 
 
 % create deltaT array, using a for loop or vectorization
-deltaT = t(1)
+deltaT = t(2:end) - t(1)*ones(NT-1, 1);
 
 %% Part 3. Plot MSD on a log-log sclae
 
@@ -77,15 +77,13 @@ figure(1), clf, hold on, box on;
 
 % plot curve, add units to axes, etc
 ax = gca;
-% ax.XScale = 'log';
-% ax.YScale = 'log';
+ax.XScale = 'log';
+ax.YScale = 'log';
 
 xlabel('Lag Time (seconds)');
 ylabel('MSD (microns^2)');
 
-disp(deltaT(1:10));
-
-plot(MSD, deltaT, 'red');
+plot(deltaT, MSD, 'Color', 'red', 'LineWidth', 1.5);
 
 %% Part 4. Determine alpha and diffusion coefficient
 
