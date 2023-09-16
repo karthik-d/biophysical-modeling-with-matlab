@@ -66,22 +66,20 @@ tails_ys = hobj_tails.Values;
 
 figure(1);
 hold on;
-plot(heads_xcenters, heads_ys, "Color", 'red');
+plot(heads_xcenters, heads_ys, "Color", 'blue', "LineWidth", 1.5);
 hold on;
-plot(tails_xcenters, tails_ys, "Color", "green");
+plot(tails_xcenters, tails_ys, "Color", "green", "LineWidth", 1.5);
 hold off;
+legend('heads', 'tails');
+fontsize(22, 'points');
+xlabel('N_{heads}');
+ylabel('P(N_{heads})');
 
 % open figure window
 % figure(1), clf, hold on, box on;
 
-disp(hobj_heads);
-
-
 % plot curves, label axes, add legend, etc.
-xlabel('N_{heads}');
-ylabel('P(N_{heads})');
-% plot(hobj_heads, "b");
-plot(hobj_tails, "g")
+
 
 %% Part 4. Plot multiple distributions as a function of nTrials
 
@@ -90,3 +88,34 @@ plot(hobj_tails, "g")
 
 % fix nFlips to be 100
 nFlips = 100;
+nTrialsVec = [100; 1000; 10000];
+nColorsVec = ["blue"; "green"; "yellow"];
+
+figure(2);
+hold on;
+for nTrialIdx = 1:size(nTrialsVec)
+    
+    nTrials = nTrialsVec(nTrialIdx);
+    
+    coinFlips = round(rand(nTrials, nFlips));
+    nHeads = sum(coinFlips, 2);
+    
+    figure(101);
+    hobj_heads = histogram(nHeads, 'Normalization', 'pdf');
+    heads_xcenters = hobj_heads.BinEdges(1:(end-1)) + hobj_heads.BinWidth/2;
+    heads_ys = hobj_heads.Values;
+    
+    figure(2);
+    hold on;
+    plot(heads_xcenters, heads_ys, "Color", nColorsVec(nTrialIdx), "LineWidth", 1.5);
+    
+end
+
+figure(2);
+hold on;
+idealBinom_xs = 1:nFlips;
+idealBinom_ys = binopdf(idealBinom_xs, nFlips, 0.5);
+plot(idealBinom_xs, idealBinom_ys, "Color", "red", "LineWidth", 1.5, "LineStyle","--");
+hold off;
+
+plot()
