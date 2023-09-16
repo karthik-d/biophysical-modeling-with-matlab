@@ -39,7 +39,8 @@ x = fileData{2};
 y = fileData{3};
 
 % get number of time points in trajectory using length function
-NT = length(t);
+% NT = length(t);
+NT = 1000;
 
 
 %% Part 2. Calculate the MSD
@@ -68,7 +69,7 @@ end
 
 
 % create deltaT array, using a for loop or vectorization
-deltaT = t(2:end) - t(1)*ones(NT-1, 1);
+deltaT = t(2:NT) - t(1)*ones(NT-1, 1);
 
 %% Part 3. Plot MSD on a log-log sclae
 
@@ -80,86 +81,50 @@ ax = gca;
 ax.XScale = 'log';
 ax.YScale = 'log';
 
-plot(deltaT, MSD, 'Color', 'red', 'LineWidth', 1);
+plot(deltaT, MSD, 'Color', 'red', 'LineWidth', 1.5);
 hold on;
 
 %% Part 4. Determine alpha and diffusion coefficient
 
 
-%% (ADDITIONAL) ------------------------------------------------------------------------------
-%%
-
-N = 600;
-MSD2 = zeros(N-1, 1);
-deltaT2 = t(2:N) - t(1)*ones(N-1, 1);
-
-% loop over the different possible time windows, calculate MSD for each
-% time window size
-for ii = 1:(N-1)
-	
-	%% -- Each loop deals with delT = 1, 2, 3, ... and computes one row of the MSD at the end.
-	
-	% calculate x displacements, separated by ii indices
-	dx = x(1+ii:end) - x(1:end-ii);
-	
-	% calculate y displacements similarly
-	dy = y(1+ii:end) - y(1:end-ii);
-	
-	% take mean over all displacements
-	dispMean = mean( dx.^2 + dy.^2 );
-	
-	% store in MSD array
-	MSD2(ii) = dispMean;
-end
-plot(deltaT2, MSD2, 'Color', 'green', 'LineWidth', 1.5, 'LineStyle', '--');
-hold on;
-
-%% (ADDITIONAL ends) ------------------------------------------------------------------------------
-
-
 % get coefficients for line of first few MSD points using polyfit
 linearCoeffs = polyfit(log10(deltaT), log10(MSD), 1);
-% for first 600 points
-linearCoeffs2 = polyfit(log10(deltaT2), log10(MSD2), 1);
-
+disp(linearCoeffs);
 % store slope and diffusion coefficient.
 alpha = linearCoeffs(1);
 diffusionCoefficient = 10^linearCoeffs(2);
-% for first 600 points
-alpha2 = linearCoeffs2(1);
-diffusionCoefficient2 = 10^linearCoeffs2(2);
 
-plot(deltaT, diffusionCoefficient*(deltaT.^alpha), 'Color', 'blue', 'LineWidth', 1.5, 'LineStyle', ':');
-hold on;
-
-plot(deltaT2, diffusionCoefficient2*(deltaT2.^alpha2), 'Color', 'black', 'LineWidth', 1.5, 'LineStyle', ':');
+plot(deltaT, diffusionCoefficient*(deltaT.^alpha));
 hold off;
-
-% legend('Experimental (all walks)', 'Experimental (first 600 walks)', 'Theoretical (first 600 walks)', 'Theoretical (first 600 walks)');
+legend('Experimental', 'Theoretical');
 fontsize(22, 'points');
 xlabel('log(delT) - unitless');
 ylabel('log(MSD) - unitless');
+
+disp(MSD(2));
 
 % plot(deltaT, alpha*deltaT);
 
 % print results to console
 disp(['alpha is = ' num2str(alpha)]);
 disp(['measured diffusion coefficient is = ' num2str(diffusionCoefficient)]);
-disp(['measured diffusion coefficient is (based on first 600 walks) = ' num2str(diffusionCoefficient2)]);
 
 
 %% Part 5. Compare expected and measured diffusion coefficient
 
 % store step size and step duration
 stepSize = MSD(1);
+% for first 6000 steps
+stepSize2 = MSD2(1);
+
 stepDuration = t(2)-t(1);
 
 % calculate expected diffusion coefficient
 expectedD = stepSize*stepSize/stepDuration;
 
+expectedD2 = stepSize2*stepSize2/stepDuration;
+
 % print result to console
 disp(['expected diffusion coefficient is = ' num2str(expectedD)]);
-
-%}
-
+disp(['expected diffusion coefficient is (based on first 600 walks) = ' num2str(expectedD2)]);
 
