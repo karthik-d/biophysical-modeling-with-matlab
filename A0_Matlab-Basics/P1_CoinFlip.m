@@ -118,4 +118,7 @@ idealBinom_ys = binopdf(idealBinom_xs, nFlips, 0.5);
 plot(idealBinom_xs, idealBinom_ys, "Color", "red", "LineWidth", 1.5, "LineStyle","--");
 hold off;
 
-plot()
+legend('Trials=100', 'Trials=1000', 'Trials=10000', 'Ideal Binomial');
+fontsize(22, 'points');
+xlabel('N_{heads}');
+ylabel('P(N_{heads})');
