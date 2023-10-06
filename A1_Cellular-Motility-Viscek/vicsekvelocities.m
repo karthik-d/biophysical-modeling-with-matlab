@@ -1,7 +1,7 @@
 function vs = vicsekvelocities(N, v0, r0, rc, eta, beta, L, rs, vs)
     %{
     Function that finds the updated velocity for a Vicsek model with repulsion.
-    The model is from PhysRevE.77.046113
+    Adapted from: PhysRevE.77.046113
     
     Inputs:
         N          The number of cells
@@ -20,27 +20,34 @@ function vs = vicsekvelocities(N, v0, r0, rc, eta, beta, L, rs, vs)
     %}
     
     % Initialize Variables
-    sum_vs = ;   % Sum of neighboring velocities
-    Si_norm = ;  % Number of neighbors for each cell i
-    Fi = ;       % Total repulsive force for each cell i
+    sum_vs = zeros(N, 2);   % Sum of neighboring velocities
+    Si_norm = zeros(N);  % Number of neighbors for each cell i
+    Fi = zeros(N, 2);       % Total repulsive force for each cell i
     
     % Calculate Fi
     for i=1:N
        % Calculate distance between cell i and the rest within a periodic box
        rijs = -[rs(:, 1) - rs(i, 1), rs(:, 2) - rs(i, 2)];
-       rijs = mod((rijs + L./2), L) - L./2;
+       rijs = mod((rijs + L./2), L) - L./2;        % find the orthogonal projections; along the length of container and perpendicular.
        dists = sqrt(sum(rijs'.^2))';
+
+       size(rijs)
+       size(dists)
        
        % Calculate the set Si 
-       Si = ;
-       Si_norm(i) = ;
+       Si = dists<=r0;
+       Si_norm(i) = sum(Si, "all");
        
        % Calculate sum_vs(i,:)
-       sum_vs(i, :) = ;
+       sum_vs(i, :) = sum(vs(Si, :));
        
        % Calculate the repulsive force due to each cell on i
-       
-       Fi(i,:)=;
+       fij = (1-(rijs/rc)).*(rijs./dists);
+       fij(dists>rc, :) = 0;
+       fij(i, :) = 0;
+
+       % Sum the repulsive forces
+       Fi(i, :) = sum(fij(Si, :));   % sum the forces, but only for those within Si (based on equation 2).
     end
     
     % Calculate a matrix of random unit vectors
