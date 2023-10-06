@@ -28,6 +28,10 @@ Nplot   = Nsteps/25;
 % Packing fraction 
 phi = 0.5;
 
+% collect alphas and diffusion coefficients.
+alphas = zeros(size(eta_values, 1), 1);
+diffusionCoefficients = zeros(size(eta_values, 1), 1);
+
 figure(1), clf, hold on, box on;
 for i = 1:size(eta_values, 1)
     eta = eta_values(i);
@@ -47,17 +51,34 @@ for i = 1:size(eta_values, 1)
 
     % average the MSD across all particle.
     MSD_average = mean(MSDtotal, 1);
+    deltaT = dt.*(1:size(MSD_average, 2));
+
+    % estimate coefficients of power law.
+    linearCoeffs = polyfit(log10(deltaT), log10(MSD_average), 1);
+    alphas(i) = linearCoeffs(1);
+    diffusionCoefficients(i) = 10^linearCoeffs(2);
 
     % plot MSD vs. time window, for current noise value.
-	plot(MSD_average, 1:size(MSD_average, 2));
+	plot(deltaT, MSD_average);
 	hold on;
 end
 
 % make plots verbose.
 hold off;
-xlabel('Average MSD','Interpreter','latex');
-ylabel('Average MSD','Interpreter','latex');
-legend('pf=0.250', 'pf=0.375', 'pf=0.500');
+xlabel('time window','Interpreter','latex');
+ylabel('average MSD','Interpreter','latex');
+legend('eta=0.4', 'eta=0.5');
+ax = gca;
+ax.FontSize = 18;
+
+
+% plot coefficients against noise value.
+figure(2);
+plot(eta_values, alphas, "Color", "b");
+plot(eta_values, diffusionCoefficients, "Color", "r");
+xlabel('noise strength $(\eta)$','Interpreter','latex');
+ylabel('$\alpha$ or $D$','Interpreter','latex');
+legend('$\alpha$', '$D$');
 ax = gca;
 ax.FontSize = 18;
 
