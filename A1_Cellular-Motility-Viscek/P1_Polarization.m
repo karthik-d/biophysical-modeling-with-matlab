@@ -4,9 +4,7 @@ strength η and packing fraction φ; use φ = 0.25,0.375, and 0.5. For the noise
 use values between η = 0.5 and η = 0.7, with points separated by 0.01. Make a plot of
 Φ vs η for the three different values of φ from simulations run for NT = 10000 time steps.
 For your calculation of Φ, only use velocities from the second half of the simulation
-to minimize transient effects that occur at thebeginning of the simulations. Name the
-script used to calculate the polarization plot LASTNAME-FIRSTNAME-polarization.m,
-and the plot itself LASTNAME-FIRSTNAME-polarization_plot.png.
+to minimize transient effects that occur at thebeginning of the simulations.
 %}
 
 % clear workspace
