@@ -21,7 +21,7 @@ function vs = vicsekvelocities(N, v0, r0, rc, eta, beta, L, rs, vs)
     
     % Initialize Variables
     sum_vs = zeros(N, 2);   % Sum of neighboring velocities
-    Si_norm = zeros(N);  % Number of neighbors for each cell i
+    Si_norm = zeros(N, 1);  % Number of neighbors for each cell i
     Fi = zeros(N, 2);       % Total repulsive force for each cell i
     
     % Calculate Fi
@@ -30,9 +30,6 @@ function vs = vicsekvelocities(N, v0, r0, rc, eta, beta, L, rs, vs)
        rijs = -[rs(:, 1) - rs(i, 1), rs(:, 2) - rs(i, 2)];
        rijs = mod((rijs + L./2), L) - L./2;        % find the orthogonal projections; along the length of container and perpendicular.
        dists = sqrt(sum(rijs'.^2))';
-
-       size(rijs)
-       size(dists)
        
        % Calculate the set Si 
        Si = dists<=r0;
@@ -52,8 +49,9 @@ function vs = vicsekvelocities(N, v0, r0, rc, eta, beta, L, rs, vs)
     
     % Calculate a matrix of random unit vectors
     noise = normer(randn(N, 2));
-    
-    vs = normer(sum_vs./v0 + beta.*Fi + eta.*[Si_norm,Si_norm].*noise) .* v0;
+
+    vs = normer(sum_vs./v0 + beta.*Fi + eta.*[Si_norm,Si_norm].*noise);
+    % vs = normer(sum_vs./v0 + beta.*Fi + eta.*[Si_norm,Si_norm].*noise) .* v0;
 end
 
 
