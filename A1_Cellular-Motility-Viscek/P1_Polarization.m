@@ -57,13 +57,13 @@ for i=1:size(phi_values, 1)
 	end
 
 	% plot pol vs. eta, for current packing fraction.
-	plot(avg_pols, eta_values);
+	plot(eta_values, avg_pols);
 	hold on;
 end
 
 hold off;
-xlabel('time-averaged polarization $(<\Phi(t)>)$','Interpreter','latex');
-ylabel('noise strength $(\eta)$','Interpreter','latex');
+xlabel('noise strength $(\eta)$','Interpreter','latex');
+ylabel('time-averaged polarization $(<\Phi(t)>)$','Interpreter','latex');
 legend('pf=0.250', 'pf=0.375', 'pf=0.500');
 ax = gca;
 ax.FontSize = 18;

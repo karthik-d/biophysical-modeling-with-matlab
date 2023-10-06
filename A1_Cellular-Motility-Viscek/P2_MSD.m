@@ -8,7 +8,7 @@ the diffusion coefficient D and power law α from the plotted data; make a plot 
 D and α as a function of noise η.
 %}
 
-eta_values = (0.4:0.1:0.8)';
+eta_values = (0.4:0.1:0.5)';
 
 %% Set the values of other parameters.
 
@@ -18,7 +18,7 @@ N = 100;
 % Define Simulation Parameters
 r0      = 2.0;              % Zone of interaction, in units of particle diameters
 v0      = 0.05;             % Speed of cells
-Nsteps  = 50000;             % Number of steps for the simulation
+Nsteps  = 5000;             % Number of steps for the simulation
 dt      = 0.005;            % Simulation timestep
 beta    = 10000;            % Value of beta for the simulation
 
@@ -28,22 +28,38 @@ Nplot   = Nsteps/25;
 % Packing fraction 
 phi = 0.5;
 
+figure(1), clf, hold on, box on;
 for i = 1:size(eta_values, 1)
     eta = eta_values(i);
 
     % run simulation.
     [xtotal, ytotal, pols] = vicsek(N, phi, r0, v0, dt, eta, beta, Nsteps, Nplot);
 
+    % neglect first 2500 time steps.
+    xtotal = xtotal(:, 2501:end);
+    ytotal = ytotal(:, 2501:end);
+
     % compute and store MSDs for each particle.
-    MSDtotal = zeros(N, Nsteps);
+    MSDtotal = zeros(N, Nsteps-2500-1);
     for j = 1:N
         MSDtotal(j, :) = compute_msd(xtotal(j, :)', ytotal(j, :)');
     end
 
     % average the MSD across all particle.
     MSD_average = mean(MSDtotal, 1);
+
+    % plot MSD vs. time window, for current noise value.
+	plot(MSD_average, 1:size(MSD_average, 2));
+	hold on;
 end
 
+% make plots verbose.
+hold off;
+xlabel('Average MSD','Interpreter','latex');
+ylabel('Average MSD','Interpreter','latex');
+legend('pf=0.250', 'pf=0.375', 'pf=0.500');
+ax = gca;
+ax.FontSize = 18;
 
 
 % helper function to compute the MSD for a given set of X and Y positions for several time points.
