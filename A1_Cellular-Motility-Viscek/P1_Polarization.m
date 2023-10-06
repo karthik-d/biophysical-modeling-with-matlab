@@ -36,8 +36,7 @@ beta    = 10000;            % Value of beta for the simulation
 % Number of plot steps to skip between consle output
 Nplot   = Nsteps/25;
 
-% xrange of plot.
-plot_length = Nsteps - floor(Nsteps/2);
+plot_colors = ['r', 'g', 'b'];
 
 figure(1), clf, hold on, box on;
 for i=1:size(phi_values, 1)
@@ -57,7 +56,7 @@ for i=1:size(phi_values, 1)
 	end
 
 	% plot pol vs. eta, for current packing fraction.
-	plot(eta_values, avg_pols);
+	plot(eta_values, avg_pols, "Color", plot_colors(i));
 	hold on;
 end
 
