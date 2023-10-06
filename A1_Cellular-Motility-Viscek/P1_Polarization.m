@@ -56,9 +56,6 @@ for i=1:size(phi_values, 1)
 		avg_pols(j) = mean(pols(ceil(Nsteps/2):end));
 	end
 
-	avg_pols 
-	eta_values
-
 	% plot pol vs. eta, for current packing fraction.
 	plot(avg_pols, eta_values);
 	hold on;
