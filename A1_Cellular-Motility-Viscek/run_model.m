@@ -57,8 +57,3 @@ xlabel('time steps','Interpreter','latex');
 ylabel('$\Phi(t)$','Interpreter','latex');
 ax = gca;
 ax.FontSize = 18;
-
-
-
-
-

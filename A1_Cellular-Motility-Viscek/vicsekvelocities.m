@@ -50,8 +50,7 @@ function vs = vicsekvelocities(N, v0, r0, rc, eta, beta, L, rs, vs)
     % Calculate a matrix of random unit vectors
     noise = normer(randn(N, 2));
 
-    vs = normer(sum_vs./v0 + beta.*Fi + eta.*[Si_norm,Si_norm].*noise);
-    % vs = normer(sum_vs./v0 + beta.*Fi + eta.*[Si_norm,Si_norm].*noise) .* v0;
+    vs = normer(sum_vs./v0 + beta.*Fi + eta.*[Si_norm,Si_norm].*noise) .* v0;
 end
 
 
