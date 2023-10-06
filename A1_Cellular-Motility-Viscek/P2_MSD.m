@@ -8,7 +8,7 @@ the diffusion coefficient D and power law α from the plotted data; make a plot 
 D and α as a function of noise η.
 %}
 
-eta_values = (0.4:0.1:0.5)';
+eta_values = (0.4:0.1:0.8)';
 
 %% Set the values of other parameters.
 
@@ -18,7 +18,7 @@ N = 100;
 % Define Simulation Parameters
 r0      = 2.0;              % Zone of interaction, in units of particle diameters
 v0      = 0.05;             % Speed of cells
-Nsteps  = 5000;             % Number of steps for the simulation
+Nsteps  = 50000;             % Number of steps for the simulation
 dt      = 0.005;            % Simulation timestep
 beta    = 10000;            % Value of beta for the simulation
 
@@ -31,6 +31,8 @@ phi = 0.5;
 % collect alphas and diffusion coefficients.
 alphas = zeros(size(eta_values, 1), 1);
 diffusionCoefficients = zeros(size(eta_values, 1), 1);
+
+plot_colors = ['r', 'g', 'b', 'm', 'k'];
 
 figure(1), clf, hold on, box on;
 for i = 1:size(eta_values, 1)
@@ -59,7 +61,7 @@ for i = 1:size(eta_values, 1)
     diffusionCoefficients(i) = 10^linearCoeffs(2);
 
     % plot MSD vs. time window, for current noise value.
-	plot(deltaT, MSD_average);
+	plot(deltaT, MSD_average, "Color", plot_colors(i));
 	hold on;
 end
 
@@ -67,14 +69,17 @@ end
 hold off;
 xlabel('time window','Interpreter','latex');
 ylabel('average MSD','Interpreter','latex');
-legend('eta=0.4', 'eta=0.5');
+legend('eta=0.4', 'eta=0.5', 'eta=0.6', 'eta=0.7', 'eta=0.8');
 ax = gca;
 ax.FontSize = 18;
+% ax.XScale = 'log';
+% ax.YScale = 'log';
 
 
 % plot coefficients against noise value.
 figure(2);
 plot(eta_values, alphas, "Color", "b");
+hold on;
 plot(eta_values, diffusionCoefficients, "Color", "r");
 xlabel('noise strength $(\eta)$','Interpreter','latex');
 ylabel('$\alpha$ or $D$','Interpreter','latex');
