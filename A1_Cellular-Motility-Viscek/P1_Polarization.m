@@ -53,17 +53,17 @@ for i=1:size(phi_values, 1)
 
 		% collect polarization value.
 		avg_pols(j) = mean(pols(ceil(Nsteps/2):end));
-	end
+    end
 
 	% plot pol vs. eta, for current packing fraction.
+    hold on;
 	plot(eta_values, avg_pols, "Color", plot_colors(i));
-	hold on;
 end
 
 hold off;
 xlabel('noise strength $(\eta)$','Interpreter','latex');
 ylabel('time-averaged polarization $(<\Phi(t)>)$','Interpreter','latex');
-legend('pf=0.250', 'pf=0.375', 'pf=0.500');
+legend("pf=0.250", "pf=0.375", "pf=0.500", ".");
 ax = gca;
 ax.FontSize = 18;
 
