@@ -53,10 +53,10 @@ for i=1:size(phi_values, 1)
 
 		% collect polarization value.
 		avg_pols(j) = mean(pols(ceil(Nsteps/2):end));
-    end
+	end
 
 	% plot pol vs. eta, for current packing fraction.
-    hold on;
+	hold on;
 	plot(eta_values, avg_pols, "Color", plot_colors(i));
 end
 
