@@ -40,7 +40,7 @@ saveas(gcf, 'outputs/voronoi_stomata.fig'); clf;
 
 % (C) Lewis law.
 areas = plotLewisLaw(V_stomata, C_stomata, xbox_stomata, ybox_stomata);
-print(areas);
+disp(areas);
 
 
 function [cellAreas] = plotLewisLaw(vertexPosns, cellNeighbors, cellsX, cellsY)
@@ -57,7 +57,7 @@ function [cellAreas] = plotLewisLaw(vertexPosns, cellNeighbors, cellsX, cellsY)
         totalArea = 0;
         for j=1:(size(vertices, 1)-1)
             totalArea = totalArea + ...
-                triangularArea([cellsX(j); cellsY(j)], vertices(j, :), vertices(j+1, :));
+                triangularArea([cellsX(i) cellsY(i)], vertices(j, :), vertices(j+1, :));
         end
         cellAreas(i) = totalArea;
 
