@@ -32,7 +32,34 @@ saveas(gcf, 'outputs/voronoi_lloyd.fig'); clf;
 %% (B-3): Stomata positions.
 stomataPosns = readmatrix('data/stomata.dat');
 
-[V_stomata, C_stomate, vAll_stomata, cAll_stomata, xbox_stomata, ybox_stomata] = getVoronoiDiagram( ...
+[V_stomata, C_stomata, vAll_stomata, cAll_stomata, xbox_stomata, ybox_stomata] = getVoronoiDiagram( ...
     stomataPosns(:, 2), stomataPosns(:, 3), 1);
 % save plot.
 saveas(gcf, 'outputs/voronoi_stomata.fig'); clf;
+
+
+% (C) Lewis law.
+areas = plotLewisLaw(V_stomata, C_stomata, xbox_stomata, ybox_stomata);
+print(areas);
+
+
+function [cellAreas] = plotLewisLaw(vertexPosns, cellNeighbors, cellsX, cellsY)
+
+    num_cells = numel(cellNeighbors);
+    n_distribution = cellfun(@numel, cellNeighbors);
+    n_bar = sum(n_distribution)/num_cells;
+    
+    % Accumulate cell areas.
+    cellAreas = zeros(num_cells, 1);
+    for i=1:num_cells
+        vertices = vertexPosns(cellNeighbors{i}, :);
+        
+        totalArea = 0;
+        for j=1:(size(vertices, 1)-1)
+            totalArea = totalArea + ...
+                triangularArea([cellsX(j); cellsY(j)], vertices(j, :), vertices(j+1, :));
+        end
+        cellAreas(i) = totalArea;
+
+    end
+end
