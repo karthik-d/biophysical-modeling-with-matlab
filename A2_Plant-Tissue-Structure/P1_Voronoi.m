@@ -39,18 +39,23 @@ saveas(gcf, 'outputs/voronoi_stomata.fig'); clf;
 
 
 % (C) Lewis law.
+areas = plotLewisLaw(V_random, C_random, xbox_random, ybox_random);
+areas = plotLewisLaw(V_disk, C_disk, xbox_disk, ybox_disk);
+areas = plotLewisLaw(V_lloyd, C_lloyd, xbox_lloyd, ybox_lloyd);
 areas = plotLewisLaw(V_stomata, C_stomata, xbox_stomata, ybox_stomata);
-disp(areas);
 
 
 function [cellAreas] = plotLewisLaw(vertexPosns, cellNeighbors, cellsX, cellsY)
 
     num_cells = numel(cellNeighbors);
     n_distribution = cellfun(@numel, cellNeighbors);
-    n_bar = sum(n_distribution)/num_cells;
+
+    % parameters.
+    n_bar = round(sum(n_distribution)/num_cells);
+    n_naught = 2;
     
     % Accumulate cell areas.
-    cellAreas = zeros(num_cells, 1);
+    cellAreas = zeros(max(n_distribution), 1);
     for i=1:num_cells
         vertices = vertexPosns(cellNeighbors{i}, :);
         
@@ -59,7 +64,10 @@ function [cellAreas] = plotLewisLaw(vertexPosns, cellNeighbors, cellsX, cellsY)
             totalArea = totalArea + ...
                 triangularArea([cellsX(i) cellsY(i)], vertices(j, :), vertices(j+1, :));
         end
-        cellAreas(i) = totalArea;
+        cellAreas(n_distribution(i)) = cellAreas(n_distribution(i)) + totalArea;
 
     end
+
+    figure(2); hold on;
+    plot(cellAreas, 1:length(cellAreas));
 end
