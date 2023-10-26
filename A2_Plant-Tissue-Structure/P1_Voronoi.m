@@ -74,6 +74,19 @@ disp(((1:length(cellsPerN_random))-nNaught) ./ (nBar_random-nNaught));
 disp(cellAreasAvg_random ./ cellAreasAvg_random(nBar_random));
 
 
+% (D) Neighbor distribution.
+figure(3); hold on;
+histogram(nDistribution_random, 'Normalization', 'pdf');
+histogram(nDistribution_disk, 'Normalization', 'pdf');
+histogram(nDistribution_lloyd, 'Normalization', 'pdf');
+histogram(nDistribution_stomata, 'Normalization', 'pdf');
+xlabel("Number of Neighbors (Normalized)");
+ylabel("Frequency");
+legend("Random", "Disks", "Lloyd", "Stomata");
+% save plot.
+saveas(gcf, 'outputs/neighbor-distribution.fig');
+
+
 % Function to compute cell parameters.
 function [nDistribution, nBar, cellAreas, cellPerimeters, cellsPerN, cellAreasPerN] = ...
     computeCellParams(vertexPosns, cellNeighbors, cellsX, cellsY)
