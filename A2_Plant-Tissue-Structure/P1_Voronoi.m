@@ -35,7 +35,7 @@ stomataPosns = readmatrix('data/stomata.dat');
 [V_stomata, C_stomata, vAll_stomata, cAll_stomata, xbox_stomata, ybox_stomata] = getVoronoiDiagram( ...
     stomataPosns(:, 2), stomataPosns(:, 3), 1);
 % save plot.
-saveas(gcf, 'outputs/voronoi_stomata.fig'); clf;
+saveas(gcf, 'outputs/voronoi_stomata.fig');
 
 
 % Record cell perimeters.
@@ -61,17 +61,17 @@ cellAreasAvg_lloyd = cellAreasPerN_lloyd ./ cellsPerN_lloyd;
 cellAreasAvg_stomata = cellAreasPerN_stomata ./ cellsPerN_stomata;
 
 figure(2); hold on;
-plot(cellAreasAvg_random ./ cellAreasAvg_random(nBar_random), ...
-	((1:length(cellsPerN_random))-nNaught) ./ (nBar_random-nNaught));
-plot(cellAreasAvg_disk ./ cellAreasAvg_disk(nBar_disk), ...
-	((1:length(cellsPerN_disk))-nNaught) ./ (nBar_disk-nNaught));
-plot(cellAreasAvg_lloyd ./ cellAreasAvg_lloyd(nBar_lloyd), ...
-	((1:length(cellsPerN_lloyd))-nNaught) ./ (nBar_lloyd-nNaught));
-plot(cellAreasAvg_stomata ./ cellAreasAvg_stomata(nBar_stomata), ...
-	((1:length(cellsPerN_stomata))-nNaught) ./ (nBar_stomata-nNaught));
+plot(((1:length(cellsPerN_random))-nNaught) ./ (nBar_random-nNaught), ...
+	cellAreasAvg_random ./ cellAreasAvg_random(nBar_random));
+plot(((1:length(cellsPerN_disk))-nNaught) ./ (nBar_disk-nNaught), ...
+	cellAreasAvg_disk ./ cellAreasAvg_disk(nBar_disk));
+plot(((1:length(cellsPerN_lloyd))-nNaught) ./ (nBar_lloyd-nNaught), ...
+	cellAreasAvg_lloyd ./ cellAreasAvg_lloyd(nBar_lloyd));
+plot(((1:length(cellsPerN_stomata))-nNaught) ./ (nBar_stomata-nNaught), ...
+	cellAreasAvg_stomata ./ cellAreasAvg_stomata(nBar_stomata));
 
-disp(((1:length(cellsPerN_random))-nNaught) ./ (nBar_random-nNaught));
-disp(cellAreasAvg_random ./ cellAreasAvg_random(nBar_random));
+% disp(((1:length(cellsPerN_random))-nNaught) ./ (nBar_random-nNaught));
+% disp(cellAreasAvg_random ./ cellAreasAvg_random(nBar_random));
 
 
 % (D) Neighbor distribution.
@@ -80,11 +80,29 @@ histogram(nDistribution_random, 'Normalization', 'pdf');
 histogram(nDistribution_disk, 'Normalization', 'pdf');
 histogram(nDistribution_lloyd, 'Normalization', 'pdf');
 histogram(nDistribution_stomata, 'Normalization', 'pdf');
-xlabel("Number of Neighbors (Normalized)");
-ylabel("Frequency");
+xlabel("Number of Neighbors");
+ylabel("Frequency (Normalized)");
 legend("Random", "Disks", "Lloyd", "Stomata");
 % save plot.
-saveas(gcf, 'outputs/neighbor-distribution.fig');
+saveas(gcf, 'outputs/neighbor_distribution.fig');
+
+
+% (E) Shape distribution.
+shapeDistribution_random = (cellPeris_random.^2) ./ (4*pi .* cellAreas_random);
+shapeDistribution_disk = (cellPeris_disk.^2) ./ (4*pi .* cellAreas_disk);
+shapeDistribution_lloyd = (cellPeris_lloyd.^2) ./ (4*pi .* cellAreas_lloyd);
+shapeDistribution_stomata = (cellPeris_stomata.^2) ./ (4*pi .* cellAreas_stomata);
+
+figure(4); hold on;
+histogram(shapeDistribution_random, 'Normalization', 'pdf');
+histogram(shapeDistribution_disk, 'Normalization', 'pdf');
+histogram(shapeDistribution_lloyd, 'Normalization', 'pdf');
+histogram(shapeDistribution_stomata, 'Normalization', 'pdf');
+xlabel("Shape Parameter");
+ylabel("Frequency (Normalized)");
+legend("Random", "Disks", "Lloyd", "Stomata");
+% save plot.
+saveas(gcf, 'outputs/shape_distribution.fig');
 
 
 % Function to compute cell parameters.
