@@ -38,36 +38,55 @@ stomataPosns = readmatrix('data/stomata.dat');
 saveas(gcf, 'outputs/voronoi_stomata.fig'); clf;
 
 
+% Record cell perimeters.
+nDistribution_random, cellAreas_random, cellPeris_random, cellsPerN_random, cellAreasPerN_random = ...
+	computeCellParams(V_random, C_random, xbox_random, ybox_random);
+
+nDistribution_disk, cellAreas_disk, cellPeris_disk, cellsPerN_disk, cellAreasPerN_disk = ...
+	computeCellParams(V_disk, C_disk, xbox_disk, ybox_disk);
+
+nDistribution_lloyd, cellAreas_lloyd, cellPeris_lloyd, cellsPerN_lloyd, cellAreasPerN_lloyd = ...
+	computeCellParams(V_lloyd, C_lloyd, xbox_lloyd, ybox_lloyd);
+
+nDistribution_stomata, cellAreas_stomata, cellPeris_stomata, cellsPerN_stomata, cellAreasPerN_stomata = ...
+	computeCellParams(V_stomata, C_stomata, xbox_stomata, ybox_stomata);
+
+
 % (C) Lewis law.
-areas = plotLewisLaw(V_random, C_random, xbox_random, ybox_random);
-areas = plotLewisLaw(V_disk, C_disk, xbox_disk, ybox_disk);
-areas = plotLewisLaw(V_lloyd, C_lloyd, xbox_lloyd, ybox_lloyd);
-areas = plotLewisLaw(V_stomata, C_stomata, xbox_stomata, ybox_stomata);
+cellAreas_random
 
 
-function [cellAreas] = plotLewisLaw(vertexPosns, cellNeighbors, cellsX, cellsY)
+% Function to compute cell parameters.
+function [nDistribution, cellDistribution, cellAreas, cellPerimeters, cellsPerN, cellAreasPerN] = ...
+    computeCellParams(vertexPosns, cellNeighbors, cellsX, cellsY)
 
     num_cells = numel(cellNeighbors);
-    n_distribution = cellfun(@numel, cellNeighbors);
+    nDistribution = cellfun(@numel, cellNeighbors);
 
     % parameters.
-    n_bar = round(sum(n_distribution)/num_cells);
+    n_bar = round(sum(nDistribution)/num_cells);
     n_naught = 2;
     
     % Accumulate cell areas.
-    cellAreas = zeros(max(n_distribution), 1);
+    cellAreasPerN = zeros(max(nDistribution), 1);
+	cellsPerN = zeros(max(nDistribution), 1)
+    cellAreas = zeros(num_cells, 1);
+    cellPerimeters = zeros(num_cells, 1);
     for i=1:num_cells
         vertices = vertexPosns(cellNeighbors{i}, :);
         
         totalArea = 0;
+        totalPerimeter = 0;
         for j=1:(size(vertices, 1)-1)
+            totalPerimeter = totalPerimeter + ...
+                euclideanDist(vertices(j, :), vertices(j+1, :));
             totalArea = totalArea + ...
                 triangularArea([cellsX(i) cellsY(i)], vertices(j, :), vertices(j+1, :));
         end
-        cellAreas(n_distribution(i)) = cellAreas(n_distribution(i)) + totalArea;
-
-    end
-
-    figure(2); hold on;
-    plot(cellAreas, 1:length(cellAreas));
+        
+		cellsPerN(nDistribution(i)) = cellsPerN(nDistribution(i)) + 1;
+		cellAreasPerN(nDistribution(i)) = cellAreasPerN(nDistribution(i)) + totalArea;
+        cellAreas(i) = totalArea;
+        cellPerimeters(i) = totalPerimeter;
+	end
 end
