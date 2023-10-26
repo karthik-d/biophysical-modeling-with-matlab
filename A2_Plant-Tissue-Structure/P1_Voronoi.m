@@ -39,37 +39,52 @@ saveas(gcf, 'outputs/voronoi_stomata.fig'); clf;
 
 
 % Record cell perimeters.
-nDistribution_random, cellAreas_random, cellPeris_random, cellsPerN_random, cellAreasPerN_random = ...
+nNaught = 2;
+
+[nDistribution_random, nBar_random, cellAreas_random, cellPeris_random, cellsPerN_random, cellAreasPerN_random] = ...
 	computeCellParams(V_random, C_random, xbox_random, ybox_random);
 
-nDistribution_disk, cellAreas_disk, cellPeris_disk, cellsPerN_disk, cellAreasPerN_disk = ...
+[nDistribution_disk, nBar_disk, cellAreas_disk, cellPeris_disk, cellsPerN_disk, cellAreasPerN_disk] = ...
 	computeCellParams(V_disk, C_disk, xbox_disk, ybox_disk);
 
-nDistribution_lloyd, cellAreas_lloyd, cellPeris_lloyd, cellsPerN_lloyd, cellAreasPerN_lloyd = ...
+[nDistribution_lloyd, nBar_lloyd, cellAreas_lloyd, cellPeris_lloyd, cellsPerN_lloyd, cellAreasPerN_lloyd] = ...
 	computeCellParams(V_lloyd, C_lloyd, xbox_lloyd, ybox_lloyd);
 
-nDistribution_stomata, cellAreas_stomata, cellPeris_stomata, cellsPerN_stomata, cellAreasPerN_stomata = ...
+[nDistribution_stomata, nBar_stomata, cellAreas_stomata, cellPeris_stomata, cellsPerN_stomata, cellAreasPerN_stomata] = ...
 	computeCellParams(V_stomata, C_stomata, xbox_stomata, ybox_stomata);
 
 
 % (C) Lewis law.
-cellAreas_random
+cellAreasAvg_random = cellAreasPerN_random ./ cellsPerN_random;
+cellAreasAvg_disk = cellAreasPerN_disk ./ cellsPerN_disk;
+cellAreasAvg_lloyd = cellAreasPerN_lloyd ./ cellsPerN_lloyd;
+cellAreasAvg_stomata = cellAreasPerN_stomata ./ cellsPerN_stomata;
+
+figure(2); hold on;
+plot(cellAreasAvg_random ./ cellAreasAvg_random(nBar_random), ...
+	((1:length(cellsPerN_random))-nNaught) ./ (nBar_random-nNaught));
+plot(cellAreasAvg_disk ./ cellAreasAvg_disk(nBar_disk), ...
+	((1:length(cellsPerN_disk))-nNaught) ./ (nBar_disk-nNaught));
+plot(cellAreasAvg_lloyd ./ cellAreasAvg_lloyd(nBar_lloyd), ...
+	((1:length(cellsPerN_lloyd))-nNaught) ./ (nBar_lloyd-nNaught));
+plot(cellAreasAvg_stomata ./ cellAreasAvg_stomata(nBar_stomata), ...
+	((1:length(cellsPerN_stomata))-nNaught) ./ (nBar_stomata-nNaught));
+
+disp(((1:length(cellsPerN_random))-nNaught) ./ (nBar_random-nNaught));
+disp(cellAreasAvg_random ./ cellAreasAvg_random(nBar_random));
 
 
 % Function to compute cell parameters.
-function [nDistribution, cellDistribution, cellAreas, cellPerimeters, cellsPerN, cellAreasPerN] = ...
+function [nDistribution, nBar, cellAreas, cellPerimeters, cellsPerN, cellAreasPerN] = ...
     computeCellParams(vertexPosns, cellNeighbors, cellsX, cellsY)
 
     num_cells = numel(cellNeighbors);
     nDistribution = cellfun(@numel, cellNeighbors);
-
-    % parameters.
-    n_bar = round(sum(nDistribution)/num_cells);
-    n_naught = 2;
+    nBar = round(sum(nDistribution)/num_cells);
     
     % Accumulate cell areas.
     cellAreasPerN = zeros(max(nDistribution), 1);
-	cellsPerN = zeros(max(nDistribution), 1)
+	cellsPerN = zeros(max(nDistribution), 1);
     cellAreas = zeros(num_cells, 1);
     cellPerimeters = zeros(num_cells, 1);
     for i=1:num_cells
@@ -79,7 +94,7 @@ function [nDistribution, cellDistribution, cellAreas, cellPerimeters, cellsPerN,
         totalPerimeter = 0;
         for j=1:(size(vertices, 1)-1)
             totalPerimeter = totalPerimeter + ...
-                euclideanDist(vertices(j, :), vertices(j+1, :));
+                pdist2(vertices(j, :), vertices(j+1, :));
             totalArea = totalArea + ...
                 triangularArea([cellsX(i) cellsY(i)], vertices(j, :), vertices(j+1, :));
         end
