@@ -6,7 +6,7 @@ randomPosns = rand(2, N);
     randomPosns(1, :), randomPosns(2, :), 1);
 
 % save generated data and plot.
-saveas(gcf, 'outputs/voronoi_random.fig'); clf;
+saveas(gcf, 'outputs/voronoi_random.png'); clf;
 writematrix(V_random, 'outputs/vertexPosns_random.dat');
 writecell(C_random, 'outputs/cellVertices_random.dat');
 
@@ -17,7 +17,7 @@ diskwallPosns = readmatrix('data/disks_walls.dat');
 [V_disk, C_disk, vAll_disk, cAll_disk, xbox_disk, ybox_disk] = getVoronoiDiagram( ...
     diskwallPosns(:, 2), diskwallPosns(:, 3), 1);
 % save plot.
-saveas(gcf, 'outputs/voronoi_diskwall.fig'); clf;
+saveas(gcf, 'outputs/voronoi_diskwall.png'); clf;
 
 
 %% (B-2): Lloyd's algorithm.
@@ -26,7 +26,7 @@ lloydPosns = readmatrix('data/lloyds.dat');
 [V_lloyd, C_lloyd, vAll_lloyd, cAll_lloyd, xbox_lloyd, ybox_lloyd] = getVoronoiDiagram( ...
     lloydPosns(:, 2), lloydPosns(:, 3), 1);
 % save plot.
-saveas(gcf, 'outputs/voronoi_lloyd.fig'); clf;
+saveas(gcf, 'outputs/voronoi_lloyd.png'); clf;
 
 
 %% (B-3): Stomata positions.
@@ -35,10 +35,10 @@ stomataPosns = readmatrix('data/stomata.dat');
 [V_stomata, C_stomata, vAll_stomata, cAll_stomata, xbox_stomata, ybox_stomata] = getVoronoiDiagram( ...
     stomataPosns(:, 2), stomataPosns(:, 3), 1);
 % save plot.
-saveas(gcf, 'outputs/voronoi_stomata.fig');
+saveas(gcf, 'outputs/voronoi_stomata.png');
 
 
-% Record cell perimeters.
+% Record cell parameters.
 nNaught = 2;
 
 [nDistribution_random, nBar_random, cellAreas_random, cellPeris_random, cellsPerN_random, cellAreasPerN_random] = ...
@@ -69,6 +69,14 @@ plot(((1:length(cellsPerN_lloyd))-nNaught) ./ (nBar_lloyd-nNaught), ...
 	cellAreasAvg_lloyd ./ cellAreasAvg_lloyd(nBar_lloyd));
 plot(((1:length(cellsPerN_stomata))-nNaught) ./ (nBar_stomata-nNaught), ...
 	cellAreasAvg_stomata ./ cellAreasAvg_stomata(nBar_stomata));
+% the ideal Lewis plot: a 45-degree slope line.
+plot([0 2], [0 2], "LineStyle", "--", "LineWidth", 1);
+% plot parameters.
+xlabel("(n-nNaught) / (nBar-nNaught)");
+ylabel("A(n) / A(nBar)");
+legend("Random", "Disks", "Lloyd", "Stomata", "Lewis Prediction");
+% save plot.
+saveas(gcf, 'outputs/neighbor_distribution.fig');
 
 % disp(((1:length(cellsPerN_random))-nNaught) ./ (nBar_random-nNaught));
 % disp(cellAreasAvg_random ./ cellAreasAvg_random(nBar_random));
@@ -76,10 +84,10 @@ plot(((1:length(cellsPerN_stomata))-nNaught) ./ (nBar_stomata-nNaught), ...
 
 % (D) Neighbor distribution.
 figure(3); hold on;
-histogram(nDistribution_random, 'Normalization', 'pdf');
-histogram(nDistribution_disk, 'Normalization', 'pdf');
-histogram(nDistribution_lloyd, 'Normalization', 'pdf');
-histogram(nDistribution_stomata, 'Normalization', 'pdf');
+histogram(nDistribution_random, 'Normalization', 'pdf', 'FaceAlpha', 0.5);
+histogram(nDistribution_disk, 'Normalization', 'pdf', 'FaceAlpha', 0.5);
+histogram(nDistribution_lloyd, 'Normalization', 'pdf', 'FaceAlpha', 0.5);
+histogram(nDistribution_stomata, 'Normalization', 'pdf', 'FaceAlpha', 0.5);
 xlabel("Number of Neighbors");
 ylabel("Frequency (Normalized)");
 legend("Random", "Disks", "Lloyd", "Stomata");
@@ -94,10 +102,10 @@ shapeDistribution_lloyd = (cellPeris_lloyd.^2) ./ (4*pi .* cellAreas_lloyd);
 shapeDistribution_stomata = (cellPeris_stomata.^2) ./ (4*pi .* cellAreas_stomata);
 
 figure(4); hold on;
-histogram(shapeDistribution_random, 'Normalization', 'pdf');
-histogram(shapeDistribution_disk, 'Normalization', 'pdf');
-histogram(shapeDistribution_lloyd, 'Normalization', 'pdf');
-histogram(shapeDistribution_stomata, 'Normalization', 'pdf');
+histogram(shapeDistribution_random, 16, 'BinLimits', [0.4 2], 'Normalization', 'pdf');
+histogram(shapeDistribution_disk, 16, 'BinLimits', [0.4 2], 'Normalization', 'pdf');
+histogram(shapeDistribution_lloyd, 16, 'BinLimits', [0.4 2], 'Normalization', 'pdf');
+histogram(shapeDistribution_stomata, 16, 'BinLimits', [0.4 2], 'Normalization', 'pdf');
 xlabel("Shape Parameter");
 ylabel("Frequency (Normalized)");
 legend("Random", "Disks", "Lloyd", "Stomata");
@@ -105,6 +113,7 @@ legend("Random", "Disks", "Lloyd", "Stomata");
 saveas(gcf, 'outputs/shape_distribution.fig');
 
 
+% ----
 % Function to compute cell parameters.
 function [nDistribution, nBar, cellAreas, cellPerimeters, cellsPerN, cellAreasPerN] = ...
     computeCellParams(vertexPosns, cellNeighbors, cellsX, cellsY)
