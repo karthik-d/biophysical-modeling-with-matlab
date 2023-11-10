@@ -41,4 +41,4 @@ predictions = net(XTest)';
 [max_values, predicted_num] = max(predictions, [], 2);
 YTest_labels = double(YTest);
 test_accuracy = sum(predicted_num == YTest_labels)./numel(YTest) * 100;
-printf("Test Accuracy: %f", test_accuracy);
+fprintf("Test Accuracy: %f\n", test_accuracy);
