@@ -19,12 +19,19 @@ test_size = size(XTest);
 
 % one-hot encode the Y vectors.
 [class_ids, class_names] = grp2idx(YTrain);
-YTrain_OneHot = zeros(numel(class_ids), train_size(2));
+YTrain_OneHot = zeros(numel(class_names), train_size(2));
 for i = 1:train_size(2)
 	YTrain_OneHot(class_ids(i), i) = 1;
 end
 
-YTest_OneHot = zeros(numel(class_ids), test_size(2));
+YTest_OneHot = zeros(numel(class_names), test_size(2));
 for i = 1:test_size(2)
 	YTest_OneHot(class_ids(i), i) = 1;
 end
+
+
+% train a neural network; test it.
+net = patternnet(numel(class_names));
+[net, tr] = train(net, XTrain, YTrain_OneHot);
+% test the network.
+predictions = net(XTest);
