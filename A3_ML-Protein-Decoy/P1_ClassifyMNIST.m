@@ -33,5 +33,12 @@ end
 % train a neural network; test it.
 net = patternnet(numel(class_names));
 [net, tr] = train(net, XTrain, YTrain_OneHot);
-% test the network.
-predictions = net(XTest);
+
+
+% test the network; obtain predictions.
+predictions = net(XTest)';
+% compute test accuracy.
+[max_values, predicted_num] = max(predictions, [], 2);
+YTest_labels = double(YTest);
+test_accuracy = sum(predicted_num == YTest_labels)./numel(YTest) * 100;
+printf("Test Accuracy: %f", test_accuracy);
