@@ -105,10 +105,22 @@ beta = 5;
 % don't forget to remove the mean velocity in the x and y direction after drawing 
 % random numbers to avoid the whole system to drift
 
+vx = normrnd(0, sqrt(T), N, 1);
+vy = normrnd(0, sqrt(T), N, 1);
+
+% Remove drift velocity
+vx = vx - mean(vx);
+vy = vy - mean(vy);
 
 % TO DO
 % initialize two N x (Nt/10) arrays, x_t, y_t, to store xc and yc, and two N x (Nt/10)
 % arrays, vx_t, vy_t, to store vx and vy, every 10 time steps
+
+x_t = zeros(N, Nt/10);
+y_t = zeros(N, Nt/10);
+
+vx_t = zeros(N, Nt/10);
+vy_t = zeros(N, Nt/10);
 
 % verlet list
 VL_c = zeros(N * 5, 2);
@@ -123,23 +135,37 @@ yc_save = yc;
 % Fx and Fy are the total x-force and y-force on the cancer cells from
 % cancer-cancer and cancer-adipocyte interactions
 [Fx, Fy] = Force_VL(xc, yc, xa, ya, AC_para, VL_c, VL_c_counter, VL_a, VL_a_counter);
+mass = 1;
+k_b = 1;
 
 for nt = 1:Nt
     % TO DO
     % update velocity and position using the "BAOAB" method here
     % update velocity for half step
-    
+	vx_half = vx + (dt/2)*Fx/mass;
+	vy_half = vy + (dt/2)*Fy/mass;    
     % update position for half step
-    
+    rx_half = xc + (dt/2)*vx;
+	ry_half = yc + (dt/2)*vy;
     % update velocity due to thermal noise
-
+	vx_rate_half = exp(-1*(beta*dt)/mass)*vx_half + sqrt(1-exp(-2*(beta*dt)/mass))*sqrt(k_b*T/mass)*randn;
+	vy_rate_half = exp(-1*(beta*dt)/mass)*vy_half + sqrt(1-exp(-2*(beta*dt)/mass))*sqrt(k_b*T/mass)*randn;
     % update position for half step
-    
+	xc = rx_half + (dt/2)*vx_rate_half;
+	yc = ry_half + (dt/2)*vy_rate_half;
+	if mod(nt, 10) == 0
+		x_t(:, nt/10) = xc;
+		y_t(:, nt/10) = yc;
+	end
     % calculate updated force after a full step
     [VL_c, VL_c_counter, VL_a, VL_a_counter, xc_save, yc_save] = VerletList(xc, yc, xa, ya, AC_para, 0, VL_c, VL_c_counter, VL_a, VL_a_counter, xc_save, yc_save);
     [Fx, Fy] = Force_VL(xc, yc, xa, ya, AC_para, VL_c, VL_c_counter, VL_a, VL_a_counter);
-
     % update velocity for half step
-    
+    vx = vx_rate_half + ((dt/2)*Fx)/mass;     % still, Fi=0.
+	vy = vy_rate_half + ((dt/2)*Fy)/mass;
+	if mod(nt, 10) == 0
+		vx_t(:, nt/10) = vx;
+		vy_t(:, nt/10) = vy;
+	end
 end
 %%
