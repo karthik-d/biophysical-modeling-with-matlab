@@ -95,7 +95,7 @@ Nt_fire = 1e7;
 [xc, yc] = FIRE_VL(xc, yc, xa, ya, AC_para, Fthresh, dt_fire, Nt_fire);
 %% NVT
 rng(1);
-Nt = 4e6;
+Nt = 4e4;
 dt = 0.01;
 beta = 5;
 
