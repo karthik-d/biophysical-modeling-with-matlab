@@ -1,1 +1,1 @@
-# Biophysical Modeling using Matlab
+# Biophysical Modeling with Matlab
