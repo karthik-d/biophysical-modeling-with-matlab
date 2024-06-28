@@ -18,3 +18,11 @@
 - [Matlab code](./A2_plant-tissue-structure).
 - [Detailed problem statement](./A2_plant-tissue-structure/assets/A2_Problem-Definition.pdf).
 - [Plots and analysis](./A2_plant-tissue-structure/outputs).
+
+#### 4. Machine Learning for Protein Decoy Detection
+
+- Basic machine learning workflow in Matlab using the [MNIST Handwritten Digits](https://git-disl.github.io/GTDLBench/datasets/mnist_datasets/) dataset.
+- Regression using multi-layer perceptrons for protein decoy detection.
+- [Matlab code](./A3_ml-for-protein-decoy).
+- [Detailed problem statement](./A3_ml-for-protein-decoy/assets/A3_Problem-Definition.pdf).
+- [Plots and analysis](./A3_ml-for-protein-decoy/outputs).
