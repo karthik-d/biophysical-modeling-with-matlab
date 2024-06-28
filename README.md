@@ -26,3 +26,11 @@
 - [Matlab code](./A3_ml-for-protein-decoy).
 - [Detailed problem statement](./A3_ml-for-protein-decoy/assets/A3_Problem-Definition.pdf).
 - [Plots and analysis](./A3_ml-for-protein-decoy/outputs).
+
+#### 5. Tumor Invasion Analysis
+
+- Deformable particle model of tumor cell invasion into white adipose tissue (WAT).
+- Thermalized soft-disk numerical model of tumor cell diffusion within WAT.
+- [Matlab code](./A4_tumor-invasion-analysis).
+- [Detailed problem statement](./A4_tumor-invasion-analysis/assets/A4_Problem-Definition.pdf).
+- [Plots and analysis](./A4_tumor-invasion-analysis/outputs).
